@@ -7,7 +7,7 @@ class TestArduinoSerial(unittest.TestCase):
 
     @patch('builtins.input', side_effect=['next', 'previous', 'down', 'up', 'change'])
     @patch('sys.stdout', new_callable=io.StringIO)
-    def test_serial_communication(self, mock_stdout, mock_input):
+    def test_new1(self, mock_stdout, mock_input):
         with patch('serial.Serial'):
             import serial_communication
 
