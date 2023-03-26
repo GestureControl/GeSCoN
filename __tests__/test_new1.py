@@ -9,19 +9,32 @@ from unittest.mock import patch, MagicMock
 import serial
 import pyautogui
 from xvfbwrapper import Xvfb 
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
+class TestWebpage(unittest.TestCase):
 
-class TestMyCode(unittest.TestCase):
+    def setUp(self):
+        self.vdisplay = Xvfb(width=1280, height=720)
+        self.vdisplay.start()
+        self.display_num = os.environ['DISPLAY']
+        self.driver = webdriver.Firefox()
+        self.driver.set_window_size(1280, 720)
 
-    @classmethod
-    def setUpClass(cls):
-        cls.vdisplay = Xvfb() 
-        cls.vdisplay.start()  
-        time.sleep(1)
-        
-    @classmethod
-    def tearDownClass(cls):
-        cls.vdisplay.stop()  #    
+    def tearDown(self):
+        self.driver.quit()
+        self.vdisplay.stop()
+
+    def test_webpage(self):
+        self.driver.get('https://www.google.com/')
+        self.assertIn('Google', self.driver.title)
+
+        search_bar = self.driver.find_element_by_name('q')
+        search_bar.send_keys('OpenAI')
+        search_bar.send_keys(Keys.RETURN)
+
+        time.sleep(2)
+        self.assertIn('OpenAI', self.driver.title)
 
 class TestSerialCommands(unittest.TestCase):
     
