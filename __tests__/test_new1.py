@@ -4,6 +4,7 @@ import time
 from unittest.mock import patch, MagicMock
 import serial
 import pyautogui
+from xvfbwrapper import Xvfb 
 
 class TestMyCode(unittest.TestCase):
 
