@@ -12,7 +12,7 @@ class TestGestureControl:
     @patch('pyautogui.scroll')
     @patch('pyautogui.keyDown')
     @patch('pyautogui.keyUp')
-    def test_gesture_control(self, mock_serial, mock_hotkey, mock_scroll, mock_keydown, mock_keyup):
+    def test_new1(self, mock_serial, mock_hotkey, mock_scroll, mock_keydown, mock_keyup):
         test_cases = [
             ("next", pyautogui.hotkey('ctrl', 'pgdn')),
             ("previous", pyautogui.hotkey('ctrl', 'pgup')),
