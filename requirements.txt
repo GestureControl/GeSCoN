@@ -3,4 +3,4 @@ pyautogui
 pytest
 pytest-mock
 xvfbwrapper
-pyserial
+pyserial==3.5
