@@ -1,70 +1,55 @@
-import os
-os.environ['DISPLAY'] = ':0'
-from xvfbwrapper import Xvfb
-import pytest
-from unittest.mock import patch, Mock
+import unittest
+from unittest.mock import patch, MagicMock
 import serial
 import pyautogui
-import io
-import sys
 
-@pytest.fixture(scope="module")
-def xvfb():
-    vdisplay = Xvfb()
-    vdisplay.start()
-    yield vdisplay
-    vdisplay.stop()
-
-def test_screenshot(xvfb):
-    # Move the mouse to the center of the screen
-    screen_width, screen_height = pyautogui.size()
-    center_x = int(screen_width / 2)
-    center_y = int(screen_height / 2)
-    pyautogui.moveTo(center_x, center_y)
-
-    # Take a screenshot
-    screenshot = pyautogui.screenshot()
-
-    # Assert that the screenshot was taken
-    assert screenshot is not None
-
-def test_mouse_movement(xvfb):
-    # Move the mouse to the center of the screen
-    screen_width, screen_height = pyautogui.size()
-    center_x = int(screen_width / 2)
-    center_y = int(screen_height / 2)
-    pyautogui.moveTo(center_x, center_y)
-
-    # Move the mouse to a new location
-    new_x, new_y = center_x + 50, center_y + 50
-    pyautogui.moveTo(new_x, new_y)
-
-    # Assert that the mouse was moved
-    assert pyautogui.position() == (new_x, new_y)
-class TestGestureControl:
+class TestSerialCommands(unittest.TestCase):
+    
     @patch('serial.Serial')
+    @patch('builtins.print')
     @patch('pyautogui.hotkey')
     @patch('pyautogui.scroll')
     @patch('pyautogui.keyDown')
     @patch('pyautogui.keyUp')
-    def test_new1(self, mock_serial, mock_hotkey, mock_scroll, mock_keydown, mock_keyup):
-        test_cases = [
-            ("next", pyautogui.hotkey('ctrl', 'pgdn')),
-            ("previous", pyautogui.hotkey('ctrl', 'pgup')),
-            ("down", pyautogui.scroll(-10)),
-            ("up", pyautogui.keyDown('pg up'), pyautogui.keyUp('pg up')),
-            ("change", pyautogui.keyDown('alt'), pyautogui.press('tab'), pyautogui.keyUp('alt'))
-        ]
-        serial_data = ["{}".format(test_case[0]).encode('utf-8') for test_case in test_cases]
-        mock_serial_instance = Mock(spec=serial.Serial)
-        mock_serial_instance.readline.side_effect = serial_data
-        mock_serial.return_value = mock_serial_instance
-
-        with patch('sys.stdout', new=io.StringIO()) as fake_out:
-            exec(open('gesture_control.py').read())
-            output = fake_out.getvalue()
-
-        for i in range(len(test_cases)):
-            self.assertIn(test_cases[i][0], output)
-            if len(test_cases[i]) > 1:
-                self.assertIn(test_cases[i][1], mock_hotkey.mock_calls)
+    def test_serial_commands(self, mock_keyUp, mock_keyDown, mock_scroll, mock_hotkey, mock_print, mock_Serial):
+        # Set up the mock Serial object and define incoming data for the different test cases
+        mock_serial = MagicMock(spec=serial.Serial)
+        mock_Serial.return_value = mock_serial
+        incoming_data_next = "next"
+        incoming_data_previous = "previous"
+        incoming_data_down = "down"
+        incoming_data_up = "up"
+        incoming_data_change = "change"
+        
+        # Test case for "next" command
+        mock_serial.readline.return_value = incoming_data_next.encode()
+        test_next = SerialCommands()
+        test_next.read_serial()
+        mock_hotkey.assert_called_once_with('ctrl', 'pgdn')
+        
+        # Test case for "previous" command
+        mock_serial.readline.return_value = incoming_data_previous.encode()
+        test_previous = SerialCommands()
+        test_previous.read_serial()
+        mock_hotkey.assert_called_once_with('ctrl', 'pgup')
+        
+        # Test case for "down" command
+        mock_serial.readline.return_value = incoming_data_down.encode()
+        test_down = SerialCommands()
+        test_down.read_serial()
+        mock_scroll.assert_called_once_with(-10)
+        
+        # Test case for "up" command
+        mock_serial.readline.return_value = incoming_data_up.encode()
+        test_up = SerialCommands()
+        test_up.read_serial()
+        mock_keyDown.assert_called_once_with('pg up')
+        mock_keyUp.assert_called_once_with('pg up')
+        
+        # Test case for "change" command
+        mock_serial.readline.return_value = incoming_data_change.encode()
+        test_change = SerialCommands()
+        test_change.read_serial()
+        mock_keyDown.assert_called_once_with('alt')
+        mock_press.assert_called_once_with('tab')
+        mock_keyUp.assert_called_once_with('alt')
