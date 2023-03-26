@@ -5,6 +5,9 @@ from unittest.mock import patch, MagicMock
 import serial
 import pyautogui
 from xvfbwrapper import Xvfb 
+import os
+
+os.environ['DISPLAY'] = ':0'
 
 class TestMyCode(unittest.TestCase):
 
