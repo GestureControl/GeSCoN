@@ -1,7 +1,21 @@
 import unittest
+import subprocess
+import time
 from unittest.mock import patch, MagicMock
 import serial
 import pyautogui
+
+class TestMyCode(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.vdisplay = Xvfb() 
+        cls.vdisplay.start()  
+        time.sleep(1)
+        
+    @classmethod
+    def tearDownClass(cls):
+        cls.vdisplay.stop()  #    
 
 class TestSerialCommands(unittest.TestCase):
     
@@ -11,7 +25,7 @@ class TestSerialCommands(unittest.TestCase):
     @patch('pyautogui.scroll')
     @patch('pyautogui.keyDown')
     @patch('pyautogui.keyUp')
-    def test_serial_commands(self, mock_keyUp, mock_keyDown, mock_scroll, mock_hotkey, mock_print, mock_Serial):
+    def test_new1(self, mock_keyUp, mock_keyDown, mock_scroll, mock_hotkey, mock_print, mock_Serial):
         # Set up the mock Serial object and define incoming data for the different test cases
         mock_serial = MagicMock(spec=serial.Serial)
         mock_Serial.return_value = mock_serial
