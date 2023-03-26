@@ -3,3 +3,4 @@ pyautogui
 pytest
 pytest-mock
 xvfbwrapper
+pyserial
