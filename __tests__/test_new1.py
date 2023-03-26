@@ -1,6 +1,6 @@
 import os
 os.environ['DISPLAY'] = ':0'
-
+from xvfbwrapper import Xvfb
 import pytest
 from unittest.mock import patch, Mock
 import serial
@@ -8,6 +8,39 @@ import pyautogui
 import io
 import sys
 
+@pytest.fixture(scope="module")
+def xvfb():
+    vdisplay = Xvfb()
+    vdisplay.start()
+    yield vdisplay
+    vdisplay.stop()
+
+def test_screenshot(xvfb):
+    # Move the mouse to the center of the screen
+    screen_width, screen_height = pyautogui.size()
+    center_x = int(screen_width / 2)
+    center_y = int(screen_height / 2)
+    pyautogui.moveTo(center_x, center_y)
+
+    # Take a screenshot
+    screenshot = pyautogui.screenshot()
+
+    # Assert that the screenshot was taken
+    assert screenshot is not None
+
+def test_mouse_movement(xvfb):
+    # Move the mouse to the center of the screen
+    screen_width, screen_height = pyautogui.size()
+    center_x = int(screen_width / 2)
+    center_y = int(screen_height / 2)
+    pyautogui.moveTo(center_x, center_y)
+
+    # Move the mouse to a new location
+    new_x, new_y = center_x + 50, center_y + 50
+    pyautogui.moveTo(new_x, new_y)
+
+    # Assert that the mouse was moved
+    assert pyautogui.position() == (new_x, new_y)
 class TestGestureControl:
     @patch('serial.Serial')
     @patch('pyautogui.hotkey')
