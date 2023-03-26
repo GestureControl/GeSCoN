@@ -2,3 +2,4 @@ serial
 pyautogui
 pytest
 pytest-mock
+xvfbwrapper
