@@ -68,3 +68,7 @@ class TestSerialCommands(unittest.TestCase):
         mock_keyDown.assert_called_once_with('alt')
         mock_press.assert_called_once_with('tab')
         mock_keyUp.assert_called_once_with('alt')
+
+        
+if __name__ == '__main__':
+    unittest.main()        
