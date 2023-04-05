@@ -1,3 +1,5 @@
+export DISPLAY=:192.168.182.248
+
 import pytest
 from unittest.mock import patch, Mock
 import serial
