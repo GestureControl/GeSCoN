@@ -5,7 +5,7 @@ Arduino_Serial = serial.Serial('com5',9600)       # Initialize serial and Create
  
 while 1:
     incoming_data = str (Arduino_Serial.readline()) # read the serial data and print it as line
-    print incoming_data                            # print the incoming Serial data
+    print (incoming_data)                            # print the incoming Serial data
      
 
     if 'next' in incoming_data:                    # if incoming data is 'next'
