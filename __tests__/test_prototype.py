@@ -2,7 +2,7 @@ import unittest
 import cv2
 import mediapipe as mp
 import pyautogui
-
+DISPLAY=:0 
 class TestVirtualMouse(unittest.TestCase):
 
     def setUp(self):
