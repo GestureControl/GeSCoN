@@ -26,4 +26,6 @@ jobs:
         export DISPLAY=:99    
     - name: Test with pytest
       run: |
+        export DISPLAY=:99 
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 & 
         pytest
