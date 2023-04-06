@@ -4,3 +4,4 @@ pytest
 pytest-mock
 xvfbwrapper
 pyserial==3.5
+opencv-python-headless
