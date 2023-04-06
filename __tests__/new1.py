@@ -1,3 +1,5 @@
+export DISPLAY=:99
+
 import serial                                      # add Serial library for serial communication
 import pyautogui                                   # add pyautogui library for programmatically controlling the mouse and keyboard.
 
