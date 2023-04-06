@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import io
 import sys
 
-import new1
+
 
 class TestMyCode(unittest.TestCase):
 
