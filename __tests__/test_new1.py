@@ -1,72 +1,29 @@
-import unittest
-from unittest.mock import MagicMock
-import io
-import sys
-from new1 import new1
+import pytest
+import serial
+import pyautogui
 
+# Create Serial port object called Arduino_Serial
+Arduino_Serial = serial.Serial('com12', 9600)
 
-class TestMyCode(unittest.TestCase):
+def test_serial_communication():
+    # Send 'next' command and check if it performs 'ctrl+pgdn' operation
+    Arduino_Serial.write(b'next\n')
+    assert pyautogui.hotkey('ctrl', 'pgdn') == None
 
-    def setUp(self):
-        # create a mock serial object
-        self.mock_serial = MagicMock()
-        # set the return value of readline() method
-        self.mock_serial.readline.side_effect = [
-            b'next\r\n', b'up\r\n', b'previous\r\n', b'down\r\n', b'close\r\n'
-        ]
-        # set the mock serial object to be used by the code
-        new1.Arduino_Serial = self.mock_serial
+    # Send 'previous' command and check if it performs 'ctrl+pgup' operation
+    Arduino_Serial.write(b'previous\n')
+    assert pyautogui.hotkey('ctrl', 'pgup') == None
 
-        # redirect stdout to a StringIO object
-        self.captured_output = io.StringIO()
-        sys.stdout = self.captured_output
+    # Send 'down' command and check if it scrolls down the page
+    Arduino_Serial.write(b'down\n')
+    assert pyautogui.scroll(-100) == None
 
-    def tearDown(self):
-        # reset stdout
-        sys.stdout = sys.__stdout__
+    # Send 'up' command and check if it scrolls up the page
+    Arduino_Serial.write(b'up\n')
+    assert pyautogui.scroll(100) == None
 
-    def test_new1(self):
-        # test 'next' command
-        new1.incoming_data = ""
-        new1.Arduino_Serial.readline.return_value = b'next\r\n'
-        new1.main()
-        self.assertEqual(
-            self.captured_output.getvalue().strip(),
-            "KeyboardEvent(down='ctrl', up='ctrl')\nKeyboardEvent(down='pgdn', up='pgdn')"
-        )
-
-        # test 'up' command
-        new1.incoming_data = ""
-        new1.Arduino_Serial.readline.return_value = b'up\r\n'
-        new1.main()
-        self.assertEqual(
-            self.captured_output.getvalue().strip(),
-            "KeyboardEvent(down='pgup', up='pgup')"
-        )
-
-        # test 'previous' command
-        new1.incoming_data = ""
-        new1.Arduino_Serial.readline.return_value = b'previous\r\n'
-        new1.main()
-        self.assertEqual(
-            self.captured_output.getvalue().strip(),
-            "KeyboardEvent(down='ctrl', up='ctrl')\nKeyboardEvent(down='pgup', up='pgup')"
-        )
-
-        # test 'down' command
-        new1.incoming_data = ""
-        new1.Arduino_Serial.readline.return_value = b'down\r\n'
-        new1.main()
-        self.assertEqual(
-            self.captured_output.getvalue().strip(),
-            "KeyboardEvent(down='pgdn', up='pgdn')"
-        )
-
-        # test 'close' command
-        new1.incoming_data = ""
-        new1.Arduino_Serial.readline.return_value = b'close\r\n'
-        new1.main()
-        self.assertEqual(
-            self.captured_output.getvalue().strip(),
-            "KeyboardEvent(down='alt', up='alt')\nKeyboardEvent(down='f4', up='f4')"
-        )
+    # Send 'change' command and check if it performs 'alt+tab' operation
+    Arduino_Serial.write(b'change\n')
+    assert pyautogui.keyDown('alt') == None
+    assert pyautogui.press('tab') == None
+    assert pyautogui.keyUp('alt') == None
