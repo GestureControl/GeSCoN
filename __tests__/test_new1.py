@@ -10,7 +10,7 @@ def test_serial():
         Arduino_Serial = serial.Serial('com12', 9600)
         while 1:
             incoming_data = str(Arduino_Serial.readline())
-            print incoming_data
+            print(incoming_data)
             if 'next' in incoming_data:
                 pyautogui.hotkey('ctrl', 'pgdn')
             if 'previous' in incoming_data:
