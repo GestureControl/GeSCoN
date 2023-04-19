@@ -3,11 +3,11 @@ import pyautogui
 from pyvirtualdisplay import Display
 import pytest
 import os
-
+# Set DISPLAY environment variable
+os.environ['DISPLAY'] = ':0'
 # Define the test function
 def test_serial_operations():
-    # Set DISPLAY environment variable
-    os.environ['DISPLAY'] = ':0'
+    
     
     # Start virtual display
     display = Display(visible=0, size=(1024, 768))
