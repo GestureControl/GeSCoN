@@ -2,13 +2,17 @@ import serial
 import pyautogui
 from pyvirtualdisplay import Display
 import pytest
-
-# Initialize XVFB display
-display = Display(visible=0, size=(1024, 768))
-display.start()
+import os
 
 # Define the test function
 def test_serial_operations():
+    # Set DISPLAY environment variable
+    os.environ['DISPLAY'] = ':0'
+    
+    # Start virtual display
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
+
     # Open a virtual serial port
     Arduino_Serial = serial.Serial('com12',9600)
     
@@ -36,9 +40,10 @@ def test_serial_operations():
             
         incoming_data = ""
 
-# Close the serial port and stop XVFB display after the test completes
-def teardown_function():
+    # Close the serial port and stop XVFB display after the test completes
     Arduino_Serial.close()
     display.stop()
-
-
+    
+# Define the teardown function for pytest
+def teardown_function():
+    pass
