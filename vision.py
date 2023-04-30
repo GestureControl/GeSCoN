@@ -50,7 +50,7 @@ def wish():
     else:
         reply("Good Evening!")  
         
-    reply("I am vision, how may I help you?")
+    reply("I am vision , how may I help you?")
 
 # Set Microphone parameters
 with sr.Microphone() as source:
