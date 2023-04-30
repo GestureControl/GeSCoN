@@ -91,7 +91,7 @@ def respond(voice_data):
         wish()
 
     elif 'what is your name' in voice_data:
-        reply('My name is proton!')
+        reply('My name is Vision!')
 
     elif 'date' in voice_data:
         reply(today.strftime("%B %d, %Y"))
