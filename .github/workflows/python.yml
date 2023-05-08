@@ -21,7 +21,7 @@ jobs:
           
       - name: Run Python Script
         run: |
-          python new1.py
+
           python Gesture_Controller.py
           python vision.py
           
@@ -41,7 +41,7 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install requests
-          python new1.py
+
           python Gesture_Controller.py
           python vision.py
 
@@ -77,6 +77,5 @@ jobs:
 
       - name: Run Python Script
         run: |
-          python new1.py
           python Gesture_Controller.py
           python vision.py
