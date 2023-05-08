@@ -3,79 +3,21 @@ name: Python CI
 on: [push, pull_request]
 
 jobs:
-  run-python:
+  build:
+
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          
-      - name: Run Python Script
-        run: |
-
-          python Gesture_Controller.py
-          python vision.py
-          
-      - name: Run Python test
-        run: |
-          pytest
-
-
-  run-python-via-powershell:
-    needs: run-python
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Run Python Script via Powershell
-        shell: pwsh
-        run: |
-          python -m pip install requests
-
-          python Gesture_Controller.py
-          python vision.py
-
-  run-python-multiple-versions:
-    needs: [run-python, run-python-via-powershell]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      max-parallel: 1
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.9', '3.10', '3.11']
-      fail-fast: false
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      
-      - name: Setup Python Version ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.3.0
-        id: setuppython
-        with:
-          python-version: ${{ matrix.python-version }}
-      
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-test1
-      
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: pip install -r requirements.txt
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
 
-      - name: Run Python Script
-        run: |
-          python Gesture_Controller.py
-          python vision.py
+    - name: Run pytest with GUI-based tests
+      run:  pytest
